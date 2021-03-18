@@ -17,19 +17,19 @@ int main(int argc, char* argv[]) {
         // file open error
         cout << "Error while reading file " << argv[1] << endl;
         return 1;
-    }    
+    }
     // read file into a string
     string inputProgram((istreambuf_iterator<char>(inputFile)),
                         (istreambuf_iterator<char>()));
-	cout << "Input: " << inputProgram << endl;
+    cout << "Input: " << inputProgram << endl;
     // close input file
     inputFile.close();
     // Try to recognize with automaton for "repeat"
-	WordDFA repeatDFA("repeat");
-	cout << "REPEAT: " << repeatDFA.run(inputProgram) << endl;
-	// Try to recognize with automaton for comments
-	CommentDFA commentDFA; 
-	cout << "COMMENT: " << commentDFA.run(inputProgram) << endl;
+    WordDFA repeatDFA("repeat");
+    cout << "REPEAT: " << repeatDFA.run(inputProgram) << endl;
+    // Try to recognize with automaton for comments
+    CommentDFA commentDFA;
+    cout << "COMMENT: " << commentDFA.run(inputProgram) << endl;
 
     return 0;
 }
