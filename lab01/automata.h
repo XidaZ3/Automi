@@ -17,6 +17,12 @@ class AbstractDFA {
 	// - final states (and sink states)
 	// - transitions of the form (state, input) -> state
 	// - current state
+
+    vector<int> states;
+    vector<int> finals;
+    int initial;
+    int current;
+    map<tpair,int> transitions;
     
 public:
 	/**
