@@ -10,7 +10,7 @@ using namespace std;
  *            Number of states in the DFA.
  */
 AbstractDFA::AbstractDFA(int noStates) {
-	// TODO: initialize data structures
+    states.resize(noStates);
 }
 
 /**
@@ -18,6 +18,7 @@ AbstractDFA::AbstractDFA(int noStates) {
  */
 void AbstractDFA::reset() {
     // TODO: reset automaton to initial state
+    current = initial;
 }
 
 /**
@@ -32,6 +33,7 @@ void AbstractDFA::reset() {
 void AbstractDFA::doStep(char letter) {
     // TODO: do step by going to the next state according to the current
     // state and the read letter.
+    current = transitions[{current,letter}];
 }
 
 /**
@@ -41,6 +43,8 @@ void AbstractDFA::doStep(char letter) {
  */
 bool AbstractDFA::isAccepting() {
     // TODO: return if the current state is accepting
+    for(auto i : finals)
+        if(i==current) return true;
     return false;
 }
 
