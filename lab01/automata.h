@@ -64,6 +64,16 @@ public:
 	 * @return True, if if the word is accepted by this automaton
 	 */
 	bool run(const string &inputWord);
+    vector<int> getStates() const;
+    void setStates(const vector<int> &value);
+    vector<int> getFinals() const;
+    void setFinals(const vector<int> &value);
+    int getInitial() const;
+    void setInitial(int value);
+    int getCurrent() const;
+    void setCurrent(int value);
+    map<tpair, int> getTransitions() const;
+    void setTransitions(const map<tpair, int> &value);
 };
 
 /**
@@ -72,7 +82,7 @@ public:
 class WordDFA : public AbstractDFA {
 
 public:
-	/**
+    /**
 	 * Construct a new DFA that recognizes exactly the given word. Given a word
 	 * "foo" the constructed automaton looks like: -> () -f-> () -o-> () -o-> []
 	 * from every state (including the final one) every other input letter leads

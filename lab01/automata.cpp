@@ -9,6 +9,56 @@ using namespace std;
  * @param noStates
  *            Number of states in the DFA.
  */
+vector<int> AbstractDFA::getStates() const
+{
+    return states;
+}
+
+void AbstractDFA::setStates(const vector<int> &value)
+{
+    states = value;
+}
+
+vector<int> AbstractDFA::getFinals() const
+{
+    return finals;
+}
+
+void AbstractDFA::setFinals(const vector<int> &value)
+{
+    finals = value;
+}
+
+int AbstractDFA::getInitial() const
+{
+    return initial;
+}
+
+void AbstractDFA::setInitial(int value)
+{
+    initial = value;
+}
+
+int AbstractDFA::getCurrent() const
+{
+    return current;
+}
+
+void AbstractDFA::setCurrent(int value)
+{
+    current = value;
+}
+
+map<tpair, int> AbstractDFA::getTransitions() const
+{
+    return transitions;
+}
+
+void AbstractDFA::setTransitions(const map<tpair, int> &value)
+{
+    transitions = value;
+}
+
 AbstractDFA::AbstractDFA(int noStates) {
     states.resize(noStates);
 }
@@ -73,10 +123,35 @@ bool AbstractDFA::run(const string &inputWord) {
  * @param word
  *            A String that the automaton should recognize
  */
-WordDFA::WordDFA(const string &word) : AbstractDFA(0) {
+
+WordDFA::WordDFA(const string &word) : AbstractDFA(word.length()+2) {
     // TODO: fill in correct number of states
-    
+    std::vector<int> states;
+    std::vector<int> finals;
+    std::map<tpair,int> transitions;
+
+    //trap state
+    states.push_back(word.length()+2);
+
+    for(int i=0;i<word.length();i++)
+    {
+        states.push_back(i);
+        transitions.insert({{i,word[i]},i+1});
+        //transition anything/anythingelse mappato con l'ASCII del NAK
+        transitions.insert({{i,{21}},word.length()+1});
+
+    }
+
+    transitions.insert({{word.length(),{21}},word.length()+1});
+    transitions.insert({{word.length()+1,{21}},word.length()+1});
     // TODO: build DFA recognizing the given word
+
+    finals.push_back(word.length());
+    setInitial(0);
+    setCurrent(0);
+    setFinals(finals);
+    setStates(states);
+    setTransitions(transitions);
 }
 
 /**
@@ -85,6 +160,8 @@ WordDFA::WordDFA(const string &word) : AbstractDFA(0) {
  * with a newline, multiline comments that starts with (* and ends with *), and
  * multiline comments that starts with { and ends with }
  */
+
+
 CommentDFA::CommentDFA() : AbstractDFA(0) {
     // TODO: fill in correct number of states
     // TODO: build DFA recognizing comments
