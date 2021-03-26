@@ -83,7 +83,12 @@ void AbstractDFA::reset() {
 void AbstractDFA::doStep(char letter) {
     // TODO: do step by going to the next state according to the current
     // state and the read letter.
-    current = transitions[{current,letter}];
+    try{
+        current = transitions.at({current,letter});
+    }catch(out_of_range){
+        current = transitions.at({current,char(21)});
+    }
+
 }
 
 /**
@@ -165,6 +170,34 @@ WordDFA::WordDFA(const string &word) : AbstractDFA(word.length()+2) {
 CommentDFA::CommentDFA() : AbstractDFA(0) {
     // TODO: fill in correct number of states
     // TODO: build DFA recognizing comments
+    map<tpair,int> transitions;
+    vector<int> finals;
+
+    transitions.insert({{0,'/'},1});
+    transitions.insert({{0,'('},2});
+    transitions.insert({{0,'{'},3});
+    transitions.insert({{0,char(21)},8});
+    transitions.insert({{1,'/'},4});
+    transitions.insert({{1,char(21)},8});
+    transitions.insert({{2,'*'},5});
+    transitions.insert({{2,char(21)},8});
+    transitions.insert({{3,char(21)},3});
+    transitions.insert({{3,'}'},7});
+    transitions.insert({{4,'\n'},7});
+    transitions.insert({{4,char(21)},4});
+    transitions.insert({{5,'*'},6});
+    transitions.insert({{5,char(21)},5});
+    transitions.insert({{6,')'},7});
+    transitions.insert({{6,char(21)},5});
+    transitions.insert({{7,char(21)},8});
+    transitions.insert({{8,char(21)},8});
+
+    finals.push_back(7);
+    setInitial(0);
+    setCurrent(0);
+    setFinals(finals);
+    setTransitions(transitions);
+
 }
 
 /**
@@ -175,7 +208,7 @@ CommentDFA::CommentDFA() : AbstractDFA(0) {
  *            The current input.
  */
 void CommentDFA::doStep(char letter) {
-    // TODO: implement accordingly
+    AbstractDFA::doStep(letter);
 }	
 
 
