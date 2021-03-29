@@ -141,8 +141,13 @@ WordDFA::WordDFA(const string &word) : AbstractDFA(word.length()+2) {
     std::map<tpair,int> transitions;
 
     //trap state
-    states.push_back(word.length()+2);
+    states.push_back(word.length()+1);
 
+	/**
+	 * Sono stati creati 0..word.length stati che hanno come 2 principali transizioni: 
+	 * allo stato i+1 (successivo) se il simbolo è corretto, altrimenti finisce nel trapstate con il simbolo fittizio(dato che non è stato definito un alfabeto)
+	 * del NAK. 
+	 */
     for(int i=0;i<word.length();i++)
     {
         states.push_back(i);
@@ -152,10 +157,14 @@ WordDFA::WordDFA(const string &word) : AbstractDFA(word.length()+2) {
 
     }
 
+	//anything else del final state se ci sono altri simboli dopo la parola corretta
     transitions.insert({{word.length(),{21}},word.length()+1});
+	
+	//trapstate self loop
     transitions.insert({{word.length()+1,{21}},word.length()+1});
     // TODO: build DFA recognizing the given word
-
+	
+	//Inizializzazione con setters
     finals.push_back(word.length());
     setInitial(0);
     setCurrent(0);
