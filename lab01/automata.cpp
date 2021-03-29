@@ -3,12 +3,7 @@
 
 using namespace std;
 
-/**
- * Constructor for Abstract DFA.
- * 
- * @param noStates
- *            Number of states in the DFA.
- */
+
 vector<int> AbstractDFA::getStates() const
 {
     return states;
@@ -59,6 +54,12 @@ void AbstractDFA::setTransitions(const map<tpair, int> &value)
     transitions = value;
 }
 
+/**
+ * Constructor for Abstract DFA.
+ *
+ * @param noStates
+ *            Number of states in the DFA.
+ */
 AbstractDFA::AbstractDFA(int noStates) {
     states.resize(noStates);
 }
@@ -81,8 +82,12 @@ void AbstractDFA::reset() {
  *            The current input.
  */
 void AbstractDFA::doStep(char letter) {
-    // TODO: do step by going to the next state according to the current
-    // state and the read letter.
+    /*
+     * Per effettuare uno step utilizziamo la funzione at() delle std::map che a differenza dell'operator[], non crea
+     * la coppia nel momento in cui si vuole accedere alla posizione determinata da una specifica chiave.
+     * Nel caso in cui non sia definita una transizione specifica per il simbolo, si ripiega sulla transazione fittizia definita
+     * per il simbolo ASCII 21 ( NAK ) nella clausola catch conseguentemente al fallimento del primo tentativo di accesso alla struttura dati.
+     * */
     try{
         current = transitions.at({current,letter});
     }catch(out_of_range){
@@ -167,11 +172,23 @@ WordDFA::WordDFA(const string &word) : AbstractDFA(word.length()+2) {
  */
 
 
-CommentDFA::CommentDFA() : AbstractDFA(0) {
-    // TODO: fill in correct number of states
-    // TODO: build DFA recognizing comments
+CommentDFA::CommentDFA() : AbstractDFA(9) {
+
+    /*
+     * Per riconoscere i commenti è stato creato un DFA  che fa utilizzo di un trap state (indice 8)
+     * La sua implementazione è statica rispetto alle tipologie di commenti di cui è dotato il linguaggio
+     * L'implementazione è effettuata tramite la definizione di una mappa che associa, come nella definizione della
+     * quintupla che caratterizza un DFA, un coppia {stato, simbolo} -> stato. Per fare ciò viene sfruttata la typedef tpair.
+     * Viene definito un vettore di stati finali, in questo caso solo quello di indice 7.
+     *
+     * Siccome non è stato definito un alfabeto per l'automa, e siccome non sappiamo come si evolveranno le funzionalità di queste
+     * classi, abbiamo deciso di implementare una transazione fittizia, corrispondente al carattere ASCII 21 ( NAK ) data l'improbabilità che
+     * questo compaia nell'input, per definire lo stato destinazione per le combinazioni di stato e input relativamente a tutti gli altri simboli
+     * dell'alfabeto che non sono già trattati.
+     * */
     map<tpair,int> transitions;
     vector<int> finals;
+
 
     transitions.insert({{0,'/'},1});
     transitions.insert({{0,'('},2});
@@ -192,6 +209,9 @@ CommentDFA::CommentDFA() : AbstractDFA(0) {
     transitions.insert({{7,char(21)},8});
     transitions.insert({{8,char(21)},8});
 
+    /*
+     * Come menzionato, l'unico stato finale è il 7, mentre quello iniziale è l'1, viene inoltre resettato l'automa alla fine della costruzione per sicurezza.
+     * */
     finals.push_back(7);
     setInitial(0);
     setCurrent(0);
