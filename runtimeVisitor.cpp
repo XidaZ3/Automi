@@ -41,7 +41,8 @@ antlrcpp::Any runtimeVisitor::visitOut(pascalParser::OutContext *ctx) {
         int value = visitExpr(ctx->expr());
         cout << value << endl;
     }else if(ctx->STRING() != NULL){
-        string value = visitExpr(ctx->STRING());
+        string value = ctx->STRING()->getText();
+        value = value.substr(1, value.length() - 2);
         cout << value << endl;
     }
     
@@ -58,7 +59,7 @@ antlrcpp::Any runtimeVisitor::visitIn(pascalParser::InContext *ctx) {
     }
     int value;
     cin >> value;
-    vars[varname] = value;
+    this->vars[varname] = value;
 
     return NULL;
 }
